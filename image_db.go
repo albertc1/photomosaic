@@ -1,5 +1,9 @@
 package main
 
+import (
+    "image"
+)
+
 type ImageRecord struct {
     r int
     g int
@@ -35,4 +39,19 @@ func SumSquares(r1 int, g1 int, b1 int, r2 int, g2 int, b2 int) int {
     gdelta := g1 - g2
     bdelta := b1 - b2
     return rdelta * rdelta + gdelta * gdelta + bdelta * bdelta
+}
+
+func InitDb() *ImageDb {
+    imgDb := ImageDb{}
+    filenames := ListSavedImages()
+    indexed := 0
+    for _, filename := range filenames {
+        img := ReadImageFromFile(filename)
+        bounds := img.Bounds()
+        r, g, b := Avg_color(img, image.Rect(bounds.Min.X, bounds.Min.Y, bounds.Max.X, bounds.Max.Y))
+        imgDb.Add(filename, r, g, b)
+        indexed++
+        log.Printf("Indexed %d images", indexed)
+    }
+    return &imgDb
 }

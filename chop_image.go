@@ -43,3 +43,10 @@ func Chop_img(img image.Image) {
 		}
 	}
 }
+
+func MakeMosaic(imgUrl string, imgDb *ImageDb) bool {
+    //fetch img from web
+    //read/decode img from file
+    // Chop_img(
+
+}

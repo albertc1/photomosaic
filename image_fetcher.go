@@ -4,8 +4,6 @@ import (
     "bufio"
     "fmt"
     "log"
-    "image"
-    // "image/draw"
     "io"
     "io/ioutil"
     "net/http"
@@ -14,6 +12,7 @@ import (
 )
 
 const IMG_LIST string = "/Users/albertc/tmp/thumbnail_urls2.csv"
+const TILE_FILE_PATH string = "/Users/albertc/tmp/tiles/"
 const IMAGE_FILE_PATH string = "/Users/albertc/tmp/images/"
 
 // FetchFromUrlFile reads a text file containing one img URL per line, fetches each URL, and
@@ -36,7 +35,7 @@ func FetchFromUrlFile() int {
     for scanner.Scan() {
         url := scanner.Text()
         //TODO: don't hardcode filenames and file formats
-        filename := IMAGE_FILE_PATH + strconv.Itoa(imgCount) + ".jpg"
+        filename := TILE_FILE_PATH + strconv.Itoa(imgCount) + ".jpg"
         if FetchImageFromUrl(url, filename) {
             fetched++
         }
@@ -82,7 +81,7 @@ func FetchImageFromUrl(url string, filename string) bool {
 
 // ListSavedImages returns a list of all files in the image directory
 func ListSavedImages() []string {
-    fileInfos, err := ioutil.ReadDir(IMAGE_FILE_PATH)
+    fileInfos, err := ioutil.ReadDir(TILE_FILE_PATH)
     if err != nil {
         panic(err)
     }
@@ -95,19 +94,18 @@ func ListSavedImages() []string {
     return filenames
 }
 
-func InitDb() {
-    filenames := ListSavedImages()
-    for _, filename := range filenames {
-        //get image from file
-        //decode image
-        //scale image
-        //encode image
-        //store image into new file in new directory
-        //index scaled image
+// ReadImageFromFile reads an image file from disk and returns an Image object
+func ReadImageFromFile(filename string) image.Image {
+    reader, err := os.Open(filename)
+    if err != nil {
+        panic(err)
     }
-}
 
-func Draw(dst image.Image, dstRect image.Rectangle, srcPath string) {
-    // src := ReadImageFromPath
-    // draw.Draw(dst, dstRect, src, image.Image.ZP, draw.Src)
+    img, _, err := image.Decode(reader)
+
+    if err != nil {
+        panic(err)
+    }
+
+    return img
 }
