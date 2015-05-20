@@ -22,16 +22,20 @@ func main() {
     // router.PUT("/error", func(c *gin.Context) {
     //     c.String(http.StatusInternalServerError, "an error happened :(")
     // })
-
     router.GET("/get_image_from_url", func(c *gin.Context) {
 
         //TODO: parse url from request
-        imgUrl := "https://tubularlabs.com/assets/img/team/team-founders.jpg"
+        imgUrl := c.Request.URL.Query().Get("img")
         MakeMosaic(imgUrl, imgDb)
 
         //TODO: handle response from MakeMosaic and return image to user
         c.String(http.StatusOK, "hello world")
     })
+
+    router.GET("/test_parser", func(c *gin.Context){
+        i := c.Request.URL.Query().Get("img")
+        c.String(http.StatusOK, i)
+        })
 
 
     router.GET("/fetch_images", func(c *gin.Context) {
@@ -40,5 +44,5 @@ func main() {
         c.String(http.StatusOK, response)
     })
 
-    router.Run(":8080")
+    router.Run(":8081")
 }

@@ -2,14 +2,14 @@ package main
 
 import (
     "image"
-    "log"
+    // "log"
 )
 
 type ImageRecord struct {
-    r int
-    g int
-    b int
-    path string
+    R int
+    G int
+    B int
+    Path string
 }
 
 type ImageDb struct {
@@ -20,19 +20,19 @@ func (ip *ImageDb) Add(path string, r int, g int, b int) {
     ip.images = append(ip.images, ImageRecord{r, g, b, path})
 }
 
-func (ip *ImageDb) Find(r int, g int, b int) string {
+func (ip *ImageDb) Find(r int, g int, b int) ImageRecord {
     var bestMatch ImageRecord
     var bestScore int = 255 * 255 * 3 + 1  //bigger than max calculatable score (lower is better)
 
     for _, img := range ip.images {
-        score := SumSquares(r, g, b, img.r, img.g, img.b)
+        score := SumSquares(r, g, b, img.R, img.G, img.B)
         if score < bestScore {
             bestScore = score
             bestMatch = img
         }
     }
 
-    return bestMatch.path
+    return bestMatch
 }
 
 func SumSquares(r1 int, g1 int, b1 int, r2 int, g2 int, b2 int) int {
@@ -56,7 +56,7 @@ func InitDb() *ImageDb {
         r, g, b := Avg_color(img, image.Rect(bounds.Min.X, bounds.Min.Y, bounds.Max.X, bounds.Max.Y))
         imgDb.Add(filename, r, g, b)
         indexed++
-        log.Printf("Indexed %d images", indexed)
+        // log.Printf("Indexed %d images", indexed)
     }
     return &imgDb
 }

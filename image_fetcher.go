@@ -38,7 +38,8 @@ func FetchFromUrlFile() int {
         url := scanner.Text()
         //TODO: don't hardcode filenames and file formats
         filename := TILE_FILE_PATH + strconv.Itoa(imgCount) + ".jpg"
-        if FetchImageFromUrl(url, filename) {
+        r := FetchImageFromUrl(url, filename)
+        if r != nil {
             fetched++
         }
         imgCount++
@@ -48,7 +49,7 @@ func FetchFromUrlFile() int {
 }
 
 //FetchImageFromUrl fetches an image from a URL and write it to the specified filename
-func FetchImageFromUrl(url string, filename string) bool {
+func FetchImageFromUrl(url string, filename string) image.Image {
     file, err := os.Create(filename)
 
     if err != nil {
@@ -63,13 +64,13 @@ func FetchImageFromUrl(url string, filename string) bool {
 
     if err != nil {
         log.Printf("Failed to fetch from %q: %q", url, err)
-        return false
+        return nil
     }
     defer resp.Body.Close()
 
     if resp.StatusCode != 200 {
         log.Printf("Failed to fetch from %q: %q", url, resp.Status)
-        return false
+        return nil
     }
 
     size, err := io.Copy(file, resp.Body)
@@ -78,7 +79,17 @@ func FetchImageFromUrl(url string, filename string) bool {
         panic(err)
     }
     log.Printf("Fetched image %q from %q size %d", filename, url, size)
-    return true
+    reader, err := os.Open(filename)
+    if err != nil {
+        panic(err)
+    }
+    // lots of files have errors for some reason, so instead of killing the program, just ignore those files
+    img, _, err := image.Decode(reader)
+    if err != nil {
+        fmt.Println(filename)
+        return nil
+    }
+    return img
 }
 
 // ListSavedImages returns a list of all files in the image directory
