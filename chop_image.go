@@ -6,6 +6,7 @@ import (
 	_ "image/gif"
 	_ "image/png"
 	_ "image/jpeg"
+    "time"
 )
 
 func Chop_img(img image.Image) {
@@ -26,9 +27,11 @@ func Chop_img(img image.Image) {
 	}
 }
 
-func MakeMosaic(imgUrl string, imgDb *ImageDb) bool {
+func MakeMosaic(imgUrl string, imgDb *ImageDb) string {
     //fetch img from web
     //read/decode img from file
     // Chop_img(
-	return false
+
+    dstName := fmt.Sprintf("static/%d.jpg", time.Now().Unix())
+    return dstName
 }

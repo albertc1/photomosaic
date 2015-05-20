@@ -4,18 +4,19 @@ import (
     "bufio"
     "fmt"
     "log"
+    "image"
     "io"
     "io/ioutil"
     "net/http"
     "os"
     "strconv"
-    "image"
+    "strings"
 )
 
 const IMG_LIST string = "/Users/albertc/tmp/thumbnail_urls2.csv"
-// const TILE_FILE_PATH string = "/Users/albertc/tmp/tiles/"
-const TILE_FILE_PATH string = "/Users/udaysaraf/gocode/src/github.com/udaysaraf/photomosaic/tiles/"
-const IMAGE_FILE_PATH string = "/Users/albertc/tmp/images/"
+const TILE_FILE_PATH string = "/Users/albertc/tmp/tiles/"
+// const TILE_FILE_PATH string = "/Users/udaysaraf/gocode/src/github.com/udaysaraf/photomosaic/tiles/"
+const IMAGE_FILE_PATH string = "static/"
 
 // FetchFromUrlFile reads a text file containing one img URL per line, fetches each URL, and
 // writes the fetched jpeg image to a file.
@@ -89,8 +90,8 @@ func ListSavedImages() []string {
     }
     filenames := []string{}
     for _, fileInfo := range fileInfos {
-        if !fileInfo.IsDir() {
-            filenames = append(filenames, fileInfo.Name())
+        if !fileInfo.IsDir() && strings.HasSuffix(fileInfo.Name(), ".jpg") {
+            filenames = append(filenames, TILE_FILE_PATH + fileInfo.Name())
         }
     }
     return filenames
@@ -98,15 +99,16 @@ func ListSavedImages() []string {
 
 // ReadImageFromFile reads an image file from disk and returns an Image object
 func ReadImageFromFile(filename string) image.Image {
-    filepath := TILE_FILE_PATH+filename
+    filepath := filename
     reader, err := os.Open(filepath)
     if err != nil {
+        log.Printf("Failed to read image from %q", filename)
         panic(err)
     }
     // lots of files have errors for some reason, so instead of killing the program, just ignore those files
     img, _, err := image.Decode(reader)
     if err != nil {
-        fmt.Println(filename)
+        log.Printf("Failed to decode image from %q", filename)
         return nil
     }
     return img
