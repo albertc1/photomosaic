@@ -2,10 +2,10 @@ package main
 
 import (
     "image"
-    // "image/draw"
+    "image/draw"
 )
 
-func Draw(dst image.Image, dstRect image.Rectangle, srcPath string) {
+func Draw(dst draw.Image, dstRect image.Rectangle, srcPath string) {
     src := ReadImageFromFile(srcPath)
-    draw.Draw(dst, dstRect, src, image.Image.ZP, draw.Src)
+    draw.Draw(dst, dstRect, src, image.ZP, draw.Src)
 }

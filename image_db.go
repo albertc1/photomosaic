@@ -2,6 +2,7 @@ package main
 
 import (
     "image"
+    "log"
 )
 
 type ImageRecord struct {
@@ -47,6 +48,10 @@ func InitDb() *ImageDb {
     indexed := 0
     for _, filename := range filenames {
         img := ReadImageFromFile(filename)
+        // ignore and move on if opening file caused error
+        if img == nil {
+            continue
+        }
         bounds := img.Bounds()
         r, g, b := Avg_color(img, image.Rect(bounds.Min.X, bounds.Min.Y, bounds.Max.X, bounds.Max.Y))
         imgDb.Add(filename, r, g, b)

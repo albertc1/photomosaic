@@ -3,28 +3,10 @@ package main
 import (
 	"fmt"
 	"image"
-	"log"
-	"os"
 	_ "image/gif"
 	_ "image/png"
 	_ "image/jpeg"
 )
-
-func main() {
-	filePath := "/Users/udaysaraf/Downloads/chelsea.jpeg"
-	reader, err := os.Open(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	img, _, err := image.Decode(reader)
-
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		Chop_img(img)
-	}
-}
 
 func Chop_img(img image.Image) {
 	r_width := 16
@@ -48,5 +30,5 @@ func MakeMosaic(imgUrl string, imgDb *ImageDb) bool {
     //fetch img from web
     //read/decode img from file
     // Chop_img(
-
+	return false
 }

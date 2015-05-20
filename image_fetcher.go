@@ -9,10 +9,12 @@ import (
     "net/http"
     "os"
     "strconv"
+    "image"
 )
 
 const IMG_LIST string = "/Users/albertc/tmp/thumbnail_urls2.csv"
-const TILE_FILE_PATH string = "/Users/albertc/tmp/tiles/"
+// const TILE_FILE_PATH string = "/Users/albertc/tmp/tiles/"
+const TILE_FILE_PATH string = "/Users/udaysaraf/gocode/src/github.com/udaysaraf/photomosaic/tiles/"
 const IMAGE_FILE_PATH string = "/Users/albertc/tmp/images/"
 
 // FetchFromUrlFile reads a text file containing one img URL per line, fetches each URL, and
@@ -96,16 +98,16 @@ func ListSavedImages() []string {
 
 // ReadImageFromFile reads an image file from disk and returns an Image object
 func ReadImageFromFile(filename string) image.Image {
-    reader, err := os.Open(filename)
+    filepath := TILE_FILE_PATH+filename
+    reader, err := os.Open(filepath)
     if err != nil {
         panic(err)
     }
-
+    // lots of files have errors for some reason, so instead of killing the program, just ignore those files
     img, _, err := image.Decode(reader)
-
     if err != nil {
-        panic(err)
+        fmt.Println(filename)
+        return nil
     }
-
     return img
 }
